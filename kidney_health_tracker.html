@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kidney Transplant Daily Health Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f5f7fb;
+      color: #222;
+    }
+    h1, h2 {
+      color: #1b4f72;
+    }
+    .date-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 6px;
+      margin: 4px 0 10px 0;
+      box-sizing: border-box;
+    }
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .section {
+      background: #ffffff;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .med-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .med-item {
+      border: 1px solid #d5d8dc;
+      border-radius: 4px;
+      padding: 6px;
+      background: #fbfcfc;
+    }
+    .bp-grid, .bs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+    }
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background: #1b4f72;
+      color: #fff;
+      font-weight: bold;
+    }
+    button.secondary {
+      background: #566573;
+    }
+    button.export {
+      background: #117a65;
+    }
+    @media (max-width: 600px) {
+      .date-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Kidney Transplant Daily Health Tracker</h1>
+
+  <div class="date-row">
+    <label for="trackDate">Date:</label>
+    <input type="date" id="trackDate">
+    <button id="loadBtn" class="secondary">Load</button>
+    <button id="saveBtn">Save</button>
+    <button id="clearBtn" class="secondary">Clear</button>
+    <button id="exportBtn" class="export">Export to Text</button>
+  </div>
+
+<div class="section">
+  <h2>Daily Score</h2>
+  <div id="dailyScore">0</div>
+</div>
+
+  <!-- Meals -->
+  <div class="section">
+    <h2>Meals</h2>
+    <label for="breakfast">Breakfast:</label>
+    <textarea id="breakfast" placeholder="Time, foods, fluids..."></textarea>
+
+    <label for="lunch">Lunch:</label>
+    <textarea id="lunch" placeholder="Time, foods, fluids..."></textarea>
+
+    <label for="dinner">Dinner:</label>
+    <textarea id="dinner" placeholder="Time, foods, fluids..."></textarea>
+
+    <label for="snacks">Snacks / Other:</label>
+    <textarea id="snacks" placeholder="Snacks, supplements, extra fluids..."></textarea>
+  </div>
+
+<!-- Hydration -->
+<div class="section">
+  <h2>Hydration</h2>
+  <label for="waterIntake">Water Intake (oz):</label>
+  <input type="number" id="waterIntake">
+</div>
+
+  <!-- Medications -->
+  <div class="section">
+    <h2>Medications</h2>
+    <p>Check when taken. You can edit names and times as needed.</p>
+    <div class="med-list" id="medList">
+      <div class="med-item">
+        <label>Medication 1</label>
+        <input type="text" id="med1Name" placeholder="e.g., Tacrolimus">
+        <input type="text" id="med1Time" placeholder="Time (e.g., 08:00)">
+        <label>
+          <input type="checkbox" id="med1Taken">
+          Taken
+        </label>
+      </div>
+      <div class="med-item">
+        <label>Medication 2</label>
+        <input type="text" id="med2Name" placeholder="e.g., Mycophenolate">
+        <input type="text" id="med2Time" placeholder="Time (e.g., 08:00)">
+        <label>
+          <input type="checkbox" id="med2Taken">
+          Taken
+        </label>
+      </div>
+      <div class="med-item">
+        <label>Medication 3</label>
+        <input type="text" id="med3Name" placeholder="e.g., Prednisone">
+        <input type="text" id="med3Time" placeholder="Time (e.g., 09:00)">
+        <label>
+          <input type="checkbox" id="med3Taken">
+          Taken
+        </label>
+      </div>
+      <div class="med-item">
+        <label>Medication 4</label>
+        <input type="text" id="med4Name" placeholder="Other">
+        <input type="text" id="med4Time" placeholder="Time">
+        <label>
+          <input type="checkbox" id="med4Taken">
+          Taken
+        </label>
+      </div>
+      <div class="med-item">
+        <label>Medication 5</label>
+        <input type="text" id="med5Name" placeholder="Other">
+        <input type="text" id="med5Time" placeholder="Time">
+        <label>
+          <input type="checkbox" id="med5Taken">
+          Taken
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blood Pressure -->
+  <div class="section">
+    <h2>Blood Pressure</h2>
+    <div class="bp-grid">
+      <div>
+        <label for="bpMorning">Morning (e.g., 120/75):</label>
+        <input type="text" id="bpMorning" placeholder="Systolic/Diastolic">
+      </div>
+      <div>
+        <label for="bpAfternoon">Afternoon:</label>
+        <input type="text" id="bpAfternoon" placeholder="Systolic/Diastolic">
+      </div>
+      <div>
+        <label for="bpEvening">Evening:</label>
+        <input type="text" id="bpEvening" placeholder="Systolic/Diastolic">
+      </div>
+    </div>
+    <label for="bpNotes">BP Notes:</label>
+    <textarea id="bpNotes" placeholder="Symptoms, dizziness, headaches, etc."></textarea>
+  </div>
+
+  <!-- Blood Sugar -->
+  <div class="section">
+    <h2>Blood Sugar</h2>
+    <div class="bs-grid">
+      <div>
+        <label for="bsFasting">Fasting:</label>
+        <input type="number" id="bsFasting" placeholder="mg/dL">
+      </div>
+      <div>
+        <label for="bsBeforeLunch">Before Lunch:</label>
+        <input type="number" id="bsBeforeLunch" placeholder="mg/dL">
+      </div>
+      <div>
+        <label for="bsBeforeDinner">Before Dinner:</label>
+        <input type="number" id="bsBeforeDinner" placeholder="mg/dL">
+      </div>
+      <div>
+        <label for="bsBedtime">Bedtime:</label>
+        <input type="number" id="bsBedtime" placeholder="mg/dL">
+      </div>
+    </div>
+    <label for="bsNotes">Blood Sugar Notes:</label>
+    <textarea id="bsNotes" placeholder="Insulin doses, hypo/hyper symptoms, etc."></textarea>
+  </div>
+
+  <!-- Exercise -->
+  <div class="section">
+    <h2>Exercise / Activity</h2>
+    <label for="exerciseLog">Exercise Log:</label>
+    <textarea id="exerciseLog" placeholder="Type, duration, intensity, how you felt..."></textarea>
+  </div>
+
+<!-- Pain -->
+<div class="section">
+  <h2>Symptoms</h2>
+  <label>Pain Level:</label>
+  <input type="range" min="0" max="10" id="painLevel">
+
+  <label>Energy Level:</label>
+  <input type="range" min="0" max="10" id="energyLevel">
+
+  <label>Swelling:</label>
+  <input type="range" min="0" max="10" id="swellingLevel">
+</div>
+
+  <!-- Notes -->
+  <div class="section">
+    <h2>General Notes</h2>
+    <textarea id="generalNotes" placeholder="Pain, swelling, urine changes, mood, sleep, clinic calls, etc."></textarea>
+  </div>
+
+  <!-- Export Output -->
+  <div class="section">
+    <h2>Exported Text</h2>
+    <textarea id="exportOutput" placeholder="Click 'Export to Text' to generate a summary here." readonly></textarea>
+  </div>
+
+  <script>
+    const STORAGE_PREFIX = "kidneyTracker_";
+
+    function getDateKey() {
+      const dateInput = document.getElementById("trackDate");
+      return dateInput.value || "";
+    }
+
+    function collectData() {
+      return {
+        date: getDateKey(),
+        meals: {
+          breakfast: document.getElementById("breakfast").value,
+          lunch: document.getElementById("lunch").value,
+          dinner: document.getElementById("dinner").value,
+          snacks: document.getElementById("snacks").value
+        },
+        meds: [
+          {
+            name: document.getElementById("med1Name").value,
+            time: document.getElementById("med1Time").value,
+            taken: document.getElementById("med1Taken").checked
+          },
+          {
+            name: document.getElementById("med2Name").value,
+            time: document.getElementById("med2Time").value,
+            taken: document.getElementById("med2Taken").checked
+          },
+          {
+            name: document.getElementById("med3Name").value,
+            time: document.getElementById("med3Time").value,
+            taken: document.getElementById("med3Taken").checked
+          },
+          {
+            name: document.getElementById("med4Name").value,
+            time: document.getElementById("med4Time").value,
+            taken: document.getElementById("med4Taken").checked
+          }
+        ],
+        bp: {
+          morning: document.getElementById("bpMorning").value,
+          afternoon: document.getElementById("bpAfternoon").value,
+          evening: document.getElementById("bpEvening").value,
+          notes: document.getElementById("bpNotes").value
+        },
+        bs: {
+          fasting: document.getElementById("bsFasting").value,
+          beforeLunch: document.getElementById("bsBeforeLunch").value,
+          beforeDinner: document.getElementById("bsBeforeDinner").value,
+          bedtime: document.getElementById("bsBedtime").value,
+          notes: document.getElementById("bsNotes").value
+        },
+        exercise: document.getElementById("exerciseLog").value,
+        notes: document.getElementById("generalNotes").value
+      };
+    }
+
+function calculateScore() {
+  let score = 0;
+
+  // meds
+  const meds = ["med1Taken","med2Taken","med3Taken","med4Taken","med5Taken"];
+  meds.forEach(id => {
+    if (document.getElementById(id).checked) score += 10;
+  });
+
+  // BP readings
+  if (document.getElementById("bpMorning").value) score += 5;
+  if (document.getElementById("bpAfternoon").value) score += 5;
+  if (document.getElementById("bpEvening").value) score += 5;
+
+  // BS readings
+  if (document.getElementById("bsFasting").value) score += 5;
+  if (document.getElementById("bsBeforeLunch").value) score += 5;
+  if (document.getElementById("bsBeforeDinner").value) score += 5;
+  if (document.getElementById("bsBedtime").value) score += 5;
+
+  return score;
+}
+
+setInterval(() => {
+  document.getElementById("dailyScore").innerText = calculateScore();
+}, 1000);
+
+
+function highlightBPMorning() {
+  const el = document.getElementById("bpMorning");
+  const val = el.value.split("/");
+
+  if (val.length === 2) {
+    const sys = parseInt(val[0]);
+    el.style.background = sys > 140 ? "#f8d7da" : "";
+  }
+}
+document.getElementById("bpMorning").addEventListener("input", highlightBPMorning);
+
+function highlightBPAfternoon() {
+  const el = document.getElementById("bpAfternoon");
+  const val = el.value.split("/");
+
+  if (val.length === 2) {
+    const sys = parseInt(val[0]);
+    el.style.background = sys > 140 ? "#f8d7da" : "";
+  }
+}
+document.getElementById("bpAfternoon").addEventListener("input", highlightBPAfternoon);
+
+function highlightBPEvening() {
+  const el = document.getElementById("bpEvening");
+  const val = el.value.split("/");
+
+  if (val.length === 2) {
+    const sys = parseInt(val[0]);
+    el.style.background = sys > 140 ? "#f8d7da" : "";
+  }
+}
+document.getElementById("bpEvening").addEventListener("input", highlightBPEvening);
+
+    function populateData(data) {
+      if (!data) return;
+      document.getElementById("breakfast").value = data.meals?.breakfast || "";
+      document.getElementById("lunch").value = data.meals?.lunch || "";
+      document.getElementById("dinner").value = data.meals?.dinner || "";
+      document.getElementById("snacks").value = data.meals?.snacks || "";
+
+      const meds = data.meds || [];
+      const ids = [1, 2, 3, 4];
+      ids.forEach((id, index) => {
+        const med = meds[index] || {};
+        document.getElementById("med" + id + "Name").value = med.name || "";
+        document.getElementById("med" + id + "Time").value = med.time || "";
+        document.getElementById("med" + id + "Taken").checked = !!med.taken;
+      });
+
+      document.getElementById("bpMorning").value = data.bp?.morning || "";
+      document.getElementById("bpAfternoon").value = data.bp?.afternoon || "";
+      document.getElementById("bpEvening").value = data.bp?.evening || "";
+      document.getElementById("bpNotes").value = data.bp?.notes || "";
+
+      document.getElementById("bsFasting").value = data.bs?.fasting || "";
+      document.getElementById("bsBeforeLunch").value = data.bs?.beforeLunch || "";
+      document.getElementById("bsBeforeDinner").value = data.bs?.beforeDinner || "";
+      document.getElementById("bsBedtime").value = data.bs?.bedtime || "";
+      document.getElementById("bsNotes").value = data.bs?.notes || "";
+
+      document.getElementById("exerciseLog").value = data.exercise || "";
+      document.getElementById("generalNotes").value = data.notes || "";
+    }
+
+    function saveData() {
+      const key = getDateKey();
+      if (!key) {
+        alert("Please select a date before saving.");
+        return;
+      }
+      const data = collectData();
+      localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(data));
+      alert("Data saved for " + key);
+    }
+
+    function loadData() {
+      const key = getDateKey();
+      if (!key) {
+        alert("Please select a date to load.");
+        return;
+      }
+      const raw = localStorage.getItem(STORAGE_PREFIX + key);
+      if (!raw) {
+        alert("No data found for " + key);
+        return;
+      }
+      const data = JSON.parse(raw);
+      populateData(data);
+      alert("Data loaded for " + key);
+    }
+
+    function clearForm() {
+      const inputs = document.querySelectorAll("input[type='text'], input[type='number'], textarea");
+      inputs.forEach(i => i.value = "");
+      const checkboxes = document.querySelectorAll("input[type='checkbox']");
+      checkboxes.forEach(c => c.checked = false);
+      document.getElementById("exportOutput").value = "";
+    }
+
+    function exportToText() {
+      const data = collectData();
+      const dateLabel = data.date || "(no date selected)";
+      let text = "";
+      text += "Kidney Transplant Daily Health Tracker\n";
+      text += "Date: " + dateLabel + "\n\n";
+
+      text += "=== Meals ===\n";
+      text += "Breakfast: " + (data.meals.breakfast || "") + "\n";
+      text += "Lunch: " + (data.meals.lunch || "") + "\n";
+      text += "Dinner: " + (data.meals.dinner || "") + "\n";
+      text += "Snacks/Other: " + (data.meals.snacks || "") + "\n\n";
+
+      text += "=== Medications ===\n";
+      data.meds.forEach((m, idx) => {
+        if (!m.name && !m.time && !m.taken) return;
+        text += "Med " + (idx + 1) + ": " +
+                (m.name || "Unnamed") +
+                " at " + (m.time || "time not set") +
+                " - " + (m.taken ? "Taken" : "Not taken") + "\n";
+      });
+      text += "\n";
+
+      text += "=== Blood Pressure ===\n";
+      text += "Morning: " + (data.bp.morning || "") + "\n";
+      text += "Afternoon: " + (data.bp.afternoon || "") + "\n";
+      text += "Evening: " + (data.bp.evening || "") + "\n";
+      text += "Notes: " + (data.bp.notes || "") + "\n\n";
+
+      text += "=== Blood Sugar (mg/dL) ===\n";
+      text += "Fasting: " + (data.bs.fasting || "") + "\n";
+      text += "Before Lunch: " + (data.bs.beforeLunch || "") + "\n";
+      text += "Before Dinner: " + (data.bs.beforeDinner || "") + "\n";
+      text += "Bedtime: " + (data.bs.bedtime || "") + "\n";
+      text += "Notes: " + (data.bs.notes || "") + "\n\n";
+
+      text += "=== Exercise / Activity ===\n";
+      text += (data.exercise || "") + "\n\n";
+
+      text += "=== General Notes ===\n";
+      text += (data.notes || "") + "\n";
+
+      document.getElementById("exportOutput").value = text;
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", saveData);
+    document.getElementById("loadBtn").addEventListener("click", loadData);
+    document.getElementById("clearBtn").addEventListener("click", clearForm);
+    document.getElementById("exportBtn").addEventListener("click", exportToText);
+
+    // Optional: default date to today
+    window.addEventListener("load", () => {
+      const dateInput = document.getElementById("trackDate");
+      if (!dateInput.value) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        dateInput.value = `${yyyy}-${mm}-${dd}`;
+      }
+    });
+  </script>
+</body>
+</html>
