@@ -169,7 +169,7 @@
       <div class="med-item">
         <label>Medication 4</label>
         <input type="text" id="med4Name" placeholder="Other">
-        <input type="text" id="med4Time" placeholder="Time">
+        <input type="text" id="med4Time" placeholder="Time (e.g., 09:00)">
         <label>
           <input type="checkbox" id="med4Taken">
           Taken
@@ -178,7 +178,7 @@
       <div class="med-item">
         <label>Medication 5</label>
         <input type="text" id="med5Name" placeholder="Other">
-        <input type="text" id="med5Time" placeholder="Time">
+        <input type="text" id="med5Time" placeholder="Time (e.g., 09:00)">
         <label>
           <input type="checkbox" id="med5Taken">
           Taken
@@ -407,7 +407,7 @@ document.getElementById("bpEvening").addEventListener("input", highlightBPEvenin
       document.getElementById("snacks").value = data.meals?.snacks || "";
 
       const meds = data.meds || [];
-      const ids = [1, 2, 3, 4];
+      const ids = [1, 2, 3, 4, 5];
       ids.forEach((id, index) => {
         const med = meds[index] || {};
         document.getElementById("med" + id + "Name").value = med.name || "";
