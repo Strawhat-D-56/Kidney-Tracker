@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+ <!-- Firebase App (core) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+
+<!-- Firebase Firestore -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
   <meta charset="UTF-8">
   <title>Kidney Transplant Daily Health Tracker</title>
   <style>
@@ -260,14 +265,7 @@
     <textarea id="exportOutput" placeholder="Click 'Export to Text' to generate a summary here." readonly></textarea>
   </div>
 
-  <script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyCp54L96JG_8WN30eQq_Oa3CUg2BLhmrio",
     authDomain: "kidney-tracker-d62c0.firebaseapp.com",
@@ -277,9 +275,9 @@
     appId: "1:265657637135:web:d5de2c1fb7494aa936067a"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-    const STORAGE_PREFIX = "kidneyTracker_";
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
 
     function getDateKey() {
       const dateInput = document.getElementById("trackDate");
@@ -315,6 +313,11 @@
             name: document.getElementById("med4Name").value,
             time: document.getElementById("med4Time").value,
             taken: document.getElementById("med4Taken").checked
+          },
+          {
+            name: document.getElementById("med5Name").value,
+            time: document.getElementById("med5Time").value,
+            taken: document.getElementById("med5Taken").checked
           }
         ],
         bp: {
@@ -454,14 +457,8 @@ document.getElementById("bpEvening").addEventListener("input", highlightBPEvenin
     } else {
       alert("No data found for this date.");
     }
-  });
-      if (!raw) {
-        alert("No data found for " + key);
-        return;
-      }
-      const data = JSON.parse(raw);
-      populateData(data);
-      alert("Data loaded for " + key);
+  })
+    .catch(err => alert("Error: " + err));  
     }
 
     function clearForm() {
